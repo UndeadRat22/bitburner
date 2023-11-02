@@ -8,7 +8,9 @@ export async function main(ns) {
   ns.print(`running ${ns.getScriptName()} with args:`);
   ns.print(args);
 
-  await hackLoop(ns, args.host, getTargetMoney(ns, args.host), 10);
+  const tgt = getTargetMoney(ns, args.host);
+
+  await hackLoop(ns, args.host, tgt, 10);
 }
 
 /** @param {NS} ns */

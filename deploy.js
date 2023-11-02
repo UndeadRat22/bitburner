@@ -12,12 +12,12 @@ export async function main(ns) {
     );
   }
 
-  const host = args._[0];
+  const target_host = args._[0];
   const script_name = args._[1];
   const script_args = args._.slice(2);
 
-  if (!ns.serverExists(host)) {
-    ns.tprint(`Server '${host}' does not exist. Aborting.`);
+  if (!ns.serverExists(target_host)) {
+    ns.tprint(`Server '${target_host}' does not exist. Aborting.`);
     return;
   }
 
@@ -39,14 +39,17 @@ export async function main(ns) {
   }
 
   const script = relevantFiles[0];
-
   const threads = Math.floor(
-    (ns.getServerMaxRam(host) - ns.getServerUsedRam(host)) /
+    (ns.getServerMaxRam(target_host) - ns.getServerUsedRam(target_host)) /
       ns.getScriptRam(script)
   );
+  const host = ns.getHostname();
+  ns.tprint(`Copying script ${script} from ${host} to ${target_host}`);
+  // wth is this api - to <- from :brainfreeze:
+  await ns.scp(script, target_host, host);
+
   ns.tprint(
-    `Running script '${script}' on server '${host}' with ${threads} threads and the following arguments: ${script_args}`
+    `Running script '${script}' on server '${target_host}' with ${threads} threads and the following arguments: ${script_args}`
   );
-  await ns.scp(script, ns.getHostname(), host);
-  ns.exec(script, host, threads, ...script_args);
+  ns.exec(script, target_host, threads, ...script_args);
 }

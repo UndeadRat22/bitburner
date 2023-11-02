@@ -6,6 +6,7 @@ var script_name;
 var script_args;
 
 export async function main(ns) {
+  processed = {};
   g_ns = ns;
 
   const args = ns.flags([["help", false]]);
@@ -37,7 +38,7 @@ const processed = {};
 const processConRec = async (ns, host, depth = 0) => {
   //ensure we don't process the same node twice, as the node graph has loops.
   if (processed[host]) {
-    r_print("already processed, returning", depth);
+    r_print(`already processed ${host}, returning`, depth);
     return;
   }
   processed[host] = true;
